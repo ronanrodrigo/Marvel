@@ -1,61 +1,73 @@
 App = Ember.Application.create();
 App.Router.map(function(){
   this.resource('about');
-  this.resource('posts', function(){
-    this.resource('post', {path: ':post_id'});
+  this.resource('comics', function(){
+    this.resource('comic', {path: ':comic_id'})
+  });
+  this.resource('stories', function(){
+    this.resource('story', {path: ':story_id'});
   });
 });
 
-App.PostsRoute = Ember.Route.extend({
+App.StoriesRoute = Ember.Route.extend({
   model: function(){
-    return $.getJSON('http://tomdale.net/api/get_recent_posts/?callback=?').then(function(data){
-      return data.posts.map(function(post){
-        post.body = post.content;
-        return post
-      });
+    ts = new Date().getTime();
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    hash = md5(ts + privateKey + publicKey);
+    url = "http://gateway.marvel.com/v1/public/stories?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    return $.getJSON(url).then(function(resource){
+      return resource.data.results
     });
-    // return posts;
   }
 });
 
-App.PostRoute = Ember.Route.extend({
+App.StoryRoute = Ember.Route.extend({
   model: function(params) {
-    // return posts.findBy('id', params.post_id);
-    return $.getJSON('http://tomdale.net/api/get_post/?id='+params.post_id+'&callback=?').then(function(data){
-      data.post.body = data.post.content;
-      return data.post;
+    ts = new Date().getTime();
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    hash = md5(ts + privateKey + publicKey);
+    story_id = params.story_id
+    url = "http://gateway.marvel.com/v1/public/stories/"+story_id+"?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    return $.getJSON(url).then(function(resource){
+      // data.post.body = data.post.content;
+      console.log(resource.data.results[0]);
+      return resource.data.results[0];
     })
   }
 });
 
-App.PostController = Ember.ObjectController.extend({
-  isEditing: false,
-  actions:{
-    edit: function(){
-      this.set('isEditing', true);
-    },
-    doneEditing: function(){
-      this.set('isEditing', false);
-    }
+App.ComicsRoute = Ember.Route.extend({
+  model: function(){
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    ts = new Date().getTime();
+    hash = md5(ts + privateKey + publicKey);
+    url = "http://gateway.marvel.com/v1/public/comics?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    return $.getJSON(url).then(function(resource){
+      return resource.data.results.map(function(result){
+        result.thumbnail_path = result.thumbnail.path + "." + result.thumbnail.extension;
+        return result
+      });
+    });
   }
-});
+})
 
-// var posts = [{
-//   id: "1",
-//   title: "Hello World",
-//   author: {name: "Ronan"},
-//   date: new Date("12-27-2014"),
-//   excerpt: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//   body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-// },
-// {
-//   id: "2",
-//   title: "Hello Joinville",
-//   author: {name: "Ronan"},
-//   date: new Date("12-27-2014"),
-//   excerpt: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//   body: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-// }]
+App.ComicRoute = Ember.Route.extend({
+  model: function(params){
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    ts = new Date().getTime();
+    hash = md5(ts + privateKey + publicKey);
+    comic_id = params.comic_id
+    url = "http://gateway.marvel.com/v1/public/comics/"+comic_id+"?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    return $.getJSON(url).then(function(resource){
+      resource.data.results[0].thumbnail_path = resource.data.results[0].thumbnail.path + "." + resource.data.results[0].thumbnail.extension;
+      return resource.data.results[0];
+    });
+  }
+})
 
 var showdown = new Showdown.converter();
 

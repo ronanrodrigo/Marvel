@@ -5,7 +5,6 @@
   <title>Ember Bloggr</title>
   <link rel="stylesheet" href="css/normalize.css">
   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-  <link href="http://netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
   <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/libs/jquery-1.10.2.js"></script>
@@ -14,7 +13,7 @@
 <body>
 
   <script type="text/x-handlebars">
-    <div class="navbar navbar-inverse" role="navigation">
+    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
       <div class="container-fuild">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse-menu">
@@ -26,9 +25,14 @@
         </div>
         <div class="collapse navbar-collapse" id="collapse-menu">
           <ul class="nav navbar-nav">
-            {{#link-to 'posts' tagName="li" href=false}}
-                {{#link-to 'posts' bubbles=false}}
-                    Posts
+            {{#link-to 'stories' tagName="li"}}
+                {{#link-to 'stories' bubbles=false}}
+                    Stories
+                {{/link-to}}
+            {{/link-to}}
+            {{#link-to 'comics' tagName="li"}}
+                {{#link-to 'comics' bubbles=false}}
+                    Comics
                 {{/link-to}}
             {{/link-to}}
             {{#link-to 'about' tagName="li" href=false}}
@@ -50,72 +54,82 @@
     <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   </script>
 
-  <script type="text/x-handlebars" id="posts">
+  <script type="text/x-handlebars" id="stories">
     <div class="row">
-      <div class="col-sm-3">
+      <div class="col-sm-5">
         <div class='panel panel-default'>
           <div class='panel-heading'>
-            Recent Posts
+            Marvel stories
           </div>
-          <div class='panel-body'>
-            Check the recent posts from my blog.
-          </div>
-          <ul class="list-group">
+          <div class="list-group">
             {{#each}}
-              <li class="list-group-item">
-                {{#link-to 'post' this}} {{{title}}} <small class='muted'>by {{author.name}}</small>{{/link-to}}
-              </li>
+              {{#link-to 'story' this class="list-group-item"}}
+                {{{title}}}
+              {{/link-to}}
             {{/each}}
-          </ul>
+          </div>
           </div>
         </div>
-      <div class="col-sm-9">
+      <div class="col-sm-7">
         {{outlet}}
       </div>
     </div>
   </script>
 
-  <script type="text/x-handlebars" id="post">
+  <script type="text/x-handlebars" id="story">
     <div class="panel panel-default">
       <div class='panel-heading'>
         {{{title}}}
-        <p class="pull-right">by {{author.name}} <small class="muted">({{format-date date}})</small></p>
       </div>
       <div class='panel-body'>
-        {{format-markdown body}}
-      </div>
-      <div class='panel-footer'>
-        {{#if isEditing}}
-          {{partial 'post/edit'}}
-          <button {{action 'doneEditing'}} class="btn btn-primary btn-sm">Done</button>
-        {{else}}
-          <button {{action 'edit'}} class="btn btn-primary btn-sm">Edit</button>
-        {{/if}}
+        {{format-markdown description}}
+        {{#each item in comics.items}}
+          {{item.name}}
+        {{/each}}
       </div>
     </div>
   </script>
 
-  <script type="text/x-handlebars" id="post/_edit">
-    <div class="form-group">
-      <label>Title</label>
-      {{input type="text" value=title class="form-control"}}
+  <script type="text/x-handlebars" id="comics">
+    <div class="row">
+      <div class="col-sm-5">
+        <div class='panel panel-default'>
+          <div class='panel-heading'>
+            Marvel comics
+          </div>
+          <div class="list-group">
+            {{#each}}
+              {{#link-to 'comic' this class="list-group-item"}}
+                {{{title}}}
+              {{/link-to}}
+            {{/each}}
+          </div>
+          </div>
+        </div>
+      <div class="col-sm-7">
+        {{outlet}}
+      </div>
     </div>
-    <div class="form-group">
-      <label>Excerpt</label>
-      {{input type="text" value=excerpt class="form-control"}}
-    </div>
-    <div class="form-group">
-      <label>Body</label>
-      {{textarea value=body class="form-control"}}
+  </script>
+
+  <script type="text/x-handlebars" id="comic">
+    <div class="panel panel-default">
+      <div class='panel-heading'>
+        {{{title}}}
+      </div>
+      <div class='panel-body'>
+        <p>{{description}}</p>
+        {{isbn}}
+        <img {{bind-attr src=thumbnail_path}}>
+      </div>
     </div>
   </script>
 
   <script src="js/libs/handlebars-1.1.2.js"></script>
   <script src="js/libs/ember-1.4.0.js"></script>
+  <script src="js/libs/md5.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
   <script src="js/app.js"></script>
-  <!-- to activate the test runner, add the "?test" query string parameter -->
-  <script src="tests/runner.js"></script>
 </body>
 </html>
