@@ -92,25 +92,31 @@
 
   <script type="text/x-handlebars" id="comics">
     <div class="row">
-      <div class="col-sm-5">
+      <div class="col-sm-12">
         <div class='panel panel-default'>
           <div class='panel-heading'>
             Marvel comics
           </div>
-          <div class="list-group">
+          <div class="panel-body">
             {{#each}}
-              {{#link-to 'comic' this class="list-group-item"}}
-                {{{title}}}
-              {{/link-to}}
+              <div class="media">
+                <a class="pull-left" href="#">
+                  <img {{bind-attr src=thumbnail_path}} class="img-thumbnail">
+                </a>
+                <div class="media-body">
+                  <h4>{{{title}}}</h4>
+                  {{{description}}}
+                </div>
+              </div>
             {{/each}}
           </div>
           </div>
         </div>
-      <div class="col-sm-7">
-        {{outlet}}
-      </div>
     </div>
   </script>
+  <!-- <div class="col-sm-6">
+    {{outlet}}
+  </div> -->
 
   <script type="text/x-handlebars" id="comic">
     <div class="panel panel-default">

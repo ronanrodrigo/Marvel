@@ -1,0 +1,9 @@
+a.img-thumb{
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+}
+
+a img.img-thumbnail{
+  height: 256px;
+}

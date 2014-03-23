@@ -44,7 +44,7 @@ App.ComicsRoute = Ember.Route.extend({
     privateKey = "0263597fde88673e43539f79947caf7c32539abb";
     ts = new Date().getTime();
     hash = md5(ts + privateKey + publicKey);
-    url = "http://gateway.marvel.com/v1/public/comics?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    url = "http://gateway.marvel.com/v1/public/comics?apikey="+publicKey+"&hash="+hash+"&ts="+ts+"&orderBy=-modified";
     return $.getJSON(url).then(function(resource){
       return resource.data.results.map(function(result){
         result.thumbnail_path = result.thumbnail.path + "." + result.thumbnail.extension;
