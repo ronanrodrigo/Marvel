@@ -35,6 +35,11 @@
                     Comics
                 {{/link-to}}
             {{/link-to}}
+            {{#link-to 'characters' tagName="li" href=false}}
+                {{#link-to 'characters' bubbles=false}}
+                    Characters
+                {{/link-to}}
+            {{/link-to}}
             {{#link-to 'about' tagName="li" href=false}}
                 {{#link-to 'about' bubbles=false}}
                     About
@@ -92,31 +97,23 @@
 
   <script type="text/x-handlebars" id="comics">
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-3">
         <div class='panel panel-default'>
           <div class='panel-heading'>
             Marvel comics
           </div>
-          <div class="panel-body">
+          <div class="list-group">
             {{#each}}
-              <div class="media">
-                <a class="pull-left" href="#">
-                  <img {{bind-attr src=thumbnail_path}} class="img-thumbnail">
-                </a>
-                <div class="media-body">
-                  <h4>{{{title}}}</h4>
-                  {{{description}}}
-                </div>
-              </div>
+              {{#link-to 'comic' this class="list-group-item"}} {{{title}}} {{/link-to}}
             {{/each}}
           </div>
-          </div>
         </div>
+      </div>
+      <div class="col-sm-9">
+        {{outlet}}
+      </div>
     </div>
   </script>
-  <!-- <div class="col-sm-6">
-    {{outlet}}
-  </div> -->
 
   <script type="text/x-handlebars" id="comic">
     <div class="panel panel-default">
@@ -126,7 +123,40 @@
       <div class='panel-body'>
         <p>{{description}}</p>
         {{isbn}}
-        <img {{bind-attr src=thumbnail_path}}>
+        <img {{bind-attr src=thumbnail_path}} class="img-thumbnail">
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="characters">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class='panel panel-default'>
+          <div class='panel-heading'>
+            Marvel comics
+          </div>
+          <div class="list-group">
+            {{#each}}
+              {{#link-to 'character' this class="list-group-item"}} {{name}} {{/link-to}}
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9">
+        {{outlet}}
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="character">
+    <div class="panel panel-default">
+      <div class='panel-heading'>
+        {{name}}
+      </div>
+      <div class='panel-body'>
+        <p>{{description}}</p>
+        {{isbn}}
+        <img {{bind-attr src=thumbnail_path}} class="img-thumbnail">
       </div>
     </div>
   </script>

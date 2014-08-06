@@ -1,6 +1,9 @@
 App = Ember.Application.create();
 App.Router.map(function(){
   this.resource('about');
+  this.resource('characters', function(){
+    this.resource('character', {path: ':character_id'})
+  });
   this.resource('comics', function(){
     this.resource('comic', {path: ':comic_id'})
   });
@@ -62,6 +65,37 @@ App.ComicRoute = Ember.Route.extend({
     hash = md5(ts + privateKey + publicKey);
     comic_id = params.comic_id
     url = "http://gateway.marvel.com/v1/public/comics/"+comic_id+"?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
+    return $.getJSON(url).then(function(resource){
+      resource.data.results[0].thumbnail_path = resource.data.results[0].thumbnail.path + "." + resource.data.results[0].thumbnail.extension;
+      return resource.data.results[0];
+    });
+  }
+})
+
+App.CharactersRoute = Ember.Route.extend({
+  model: function(){
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    ts = new Date().getTime();
+    hash = md5(ts + privateKey + publicKey);
+    url = "http://gateway.marvel.com/v1/public/characters?apikey="+publicKey+"&hash="+hash+"&ts="+ts+"&orderBy=-modified";
+    return $.getJSON(url).then(function(resource){
+      return resource.data.results.map(function(result){
+        result.thumbnail_path = result.thumbnail.path + "." + result.thumbnail.extension;
+        return result
+      });
+    });
+  }
+})
+
+App.CharacterRoute = Ember.Route.extend({
+  model: function(params){
+    publicKey = "e438176d564bd323d172a6358c8cd85f";
+    privateKey = "0263597fde88673e43539f79947caf7c32539abb";
+    ts = new Date().getTime();
+    hash = md5(ts + privateKey + publicKey);
+    character_id = params.character_id
+    url = "http://gateway.marvel.com/v1/public/characters/"+character_id+"?apikey="+publicKey+"&hash="+hash+"&ts="+ts;
     return $.getJSON(url).then(function(resource){
       resource.data.results[0].thumbnail_path = resource.data.results[0].thumbnail.path + "." + resource.data.results[0].thumbnail.extension;
       return resource.data.results[0];

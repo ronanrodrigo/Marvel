@@ -4,6 +4,6 @@ a.img-thumb{
   overflow: hidden;
 }
 
-a img.img-thumbnail{
-  height: 256px;
+img.img-thumbnail{
+  height: 50%;
 }
